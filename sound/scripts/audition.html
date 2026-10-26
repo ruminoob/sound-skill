@@ -1,0 +1,250 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a listening sheet. Each cue is one row: its brief on the left, its takes stacked on the
+   right, each take a spectrogram screen with a playhead. Take colours follow the spectrogram's ramp. */
+:root {
+  --bg: #f6f3f7;
+  --surface: #ffffff;
+  --ink: #1d1424;
+  --muted: #6b5f72;
+  --line: #e2dbe6;
+  --screen: #000000;
+  --screen-ink: #ffffff;
+  --glow: #fcb06a;
+  --take-1: #7d7290; --take-1-ink: #ffffff;
+  --take-2: #c8456a; --take-2-ink: #ffffff;
+  --take-3: #e2603c; --take-3-ink: #ffffff;
+  --take-4: #e9a23b; --take-4-ink: #2a1505;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #110b16; --surface: #1a1221; --ink: #f1eaf4; --muted: #a596ad; --line: #2e2337;
+    --take-1: #9a8fae; --take-1-ink: #160f1c; --take-2: #de5a7e; --take-2-ink: #1a0810;
+    --take-3: #f07a50; --take-3-ink: #1a0d08;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #110b16; --surface: #1a1221; --ink: #f1eaf4; --muted: #a596ad; --line: #2e2337;
+  --take-1: #9a8fae; --take-1-ink: #160f1c; --take-2: #de5a7e; --take-2-ink: #1a0810;
+  --take-3: #f07a50; --take-3-ink: #1a0d08;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 15px/1.55 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.page { max-width: 1080px; margin: 0 auto; display: grid; gap: 40px; }
+
+header { display: grid; gap: 14px; max-width: 68ch; }
+h1 {
+  font: 700 clamp(30px, 5vw, 46px)/1.05 var(--font-display);
+  letter-spacing: -0.02em; margin: 0; text-wrap: balance;
+}
+header p { margin: 0; color: var(--muted); font-size: 16px; }
+
+.cues { display: grid; border-top: 1px solid var(--line); }
+.cue {
+  display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 20px 36px; padding-block: 32px; border-bottom: 1px solid var(--line);
+}
+.brief { display: grid; gap: 8px; align-content: start; }
+.brief h2 { font: 700 24px/1.15 var(--font-display); margin: 0; letter-spacing: -0.01em; }
+.brief p { margin: 0; color: var(--muted); font-size: 14px; }
+.matched { font: 400 13px/1.4 var(--font-data); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bursts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.burst {
+  font: 500 14px/1 var(--font-body); color: var(--ink);
+  background: transparent; border: 1px solid var(--line); border-radius: 999px;
+  padding: 9px 14px; cursor: pointer;
+}
+.burst:hover { border-color: var(--muted); }
+
+.takes { display: grid; gap: 18px; min-width: 0; }
+.take { display: grid; grid-template-columns: minmax(52px, max-content) minmax(0, 1fr); gap: 8px 14px; align-items: start; }
+.play {
+  min-width: 52px; height: 52px; padding: 0 16px; border-radius: 999px; border: 0; cursor: pointer;
+  font: 700 17px/1 var(--font-display); background: var(--c); color: var(--c-ink);
+  transition: transform .12s ease, box-shadow .2s ease;
+}
+.play:hover { transform: scale(1.05); }
+.play:active { transform: scale(0.97); }
+.play[aria-pressed="true"] { box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--c); }
+.t1 { --c: var(--take-1); --c-ink: var(--take-1-ink); }
+.t2 { --c: var(--take-2); --c-ink: var(--take-2-ink); }
+.t3 { --c: var(--take-3); --c-ink: var(--take-3-ink); }
+.t4 { --c: var(--take-4); --c-ink: var(--take-4-ink); }
+
+.screen {
+  position: relative; background: var(--screen); border-radius: 6px; overflow: hidden;
+  aspect-ratio: 1200 / 260; max-width: 100%; cursor: pointer;
+}
+.screen img { display: block; width: 100%; height: 100%; object-fit: fill; }
+.head {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 2px; background: var(--screen-ink);
+  box-shadow: 0 0 10px var(--glow); opacity: 0; pointer-events: none;
+}
+.screen.live .head { opacity: 1; }
+.about { grid-column: 2; display: grid; gap: 6px; min-width: 0; }
+.about p { margin: 0; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: 400 12px/1 var(--font-data); font-variant-numeric: tabular-nums;
+  padding: 5px 8px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); color: var(--muted);
+}
+.chip.flag { color: var(--ink); border-color: var(--take-1); }
+
+button:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
+
+@media (max-width: 720px) {
+  body { padding-block: 28px 48px; }
+  .cue { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 26px; }
+  .play { min-width: 44px; height: 44px; font-size: 15px; padding: 0 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .play { transition: none; }
+}
+</style>
+
+<div class="page">
+  <header>
+    <h1 id="title"></h1>
+    <p id="intro"></p>
+    <p>Every take of a cue is matched to the same loudness, so none wins by being louder.</p>
+  </header>
+  <section class="cues" id="cues"></section>
+</div>
+
+<script>
+const DATA = __DATA__;
+
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+document.getElementById("title").textContent = DATA.title;
+document.getElementById("intro").textContent = DATA.intro;
+
+function chips(m) {
+  const out = [`<span class="chip">${m.sec.toFixed(2)} s</span>`];
+  out.push(m.first_sample_db > -30
+    ? `<span class="chip flag">Starts with a click</span>` : `<span class="chip">Starts from silence</span>`);
+  out.push(m.last_2ms_db > -40
+    ? `<span class="chip flag">Cut off at ${Math.round(m.last_2ms_db)} dB</span>` : `<span class="chip">Fades to silence</span>`);
+  return out.join("");
+}
+
+document.getElementById("cues").innerHTML = DATA.cues.map(cue => `
+  <article class="cue" id="${esc(cue.id)}">
+    <div class="brief">
+      <h2>${esc(cue.name)}</h2>
+      <p>${esc(cue.brief)}</p>
+      <span class="matched">Matched at ${cue.lufs.toFixed(1)} LUFS</span>
+      ${cue.takes.some(t => t.files.length > 1) ? `<div class="bursts">${cue.takes.map((t, k) =>
+        `<button class="burst" data-cue="${esc(cue.id)}" data-take="${k}">${esc(t.label)} &times; 8</button>`).join("")}</div>` : ""}
+    </div>
+    <div class="takes">${cue.takes.map((t, k) => `
+      <div class="take t${(k % 4) + 1}">
+        <button class="play" data-cue="${esc(cue.id)}" data-take="${k}" aria-pressed="false"
+          aria-label="Play ${esc(cue.name)} ${esc(t.label)}">${esc(t.label)}</button>
+        <div class="screen" data-cue="${esc(cue.id)}" data-take="${k}">
+          <img src="${esc(t.img)}" alt="Spectrogram of ${esc(cue.name)} ${esc(t.label)}" loading="lazy">
+          <i class="head"></i>
+        </div>
+        <div class="about">
+          ${t.note ? `<p>${esc(t.note)}</p>` : ""}
+          <div class="chips">${chips(t.m)}</div>
+        </div>
+      </div>`).join("")}
+    </div>
+  </article>`).join("");
+
+// --- playback -------------------------------------------------------------
+let ctx = null;
+const buffers = new Map();
+const rotation = new Map();
+let current = null;   // { sources, button, screen, start, span, length, raf }
+
+function audio() {
+  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === "suspended") ctx.resume();
+  return ctx;
+}
+
+function load(url) {
+  if (!buffers.has(url)) {
+    buffers.set(url, fetch(url).then(r => r.arrayBuffer()).then(b => audio().decodeAudioData(b)));
+  }
+  return buffers.get(url);
+}
+
+function stop() {
+  if (!current) return;
+  current.sources.forEach(s => { try { s.stop(); } catch (e) {} });
+  cancelAnimationFrame(current.raf);
+  current.button.setAttribute("aria-pressed", "false");
+  current.screen.classList.remove("live");
+  current = null;
+}
+
+function animate(state) {
+  const head = state.screen.querySelector(".head");
+  const tick = () => {
+    if (current !== state) return;
+    const t = ctx.currentTime - state.start;
+    head.style.left = `${Math.min(100, (t / state.span) * 100)}%`;
+    if (t >= state.length) { stop(); return; }
+    state.raf = requestAnimationFrame(tick);
+  };
+  state.raf = requestAnimationFrame(tick);
+}
+
+async function play(cueId, k, times) {
+  const cue = DATA.cues.find(c => c.id === cueId);
+  const take = cue.takes[k];
+  const sel = `[data-cue="${CSS.escape(cueId)}"][data-take="${k}"]`;
+  const btn = document.querySelector(`.play${sel}`);
+  const screen = document.querySelector(`.screen${sel}`);
+  const again = current && current.button === btn && times === 1;
+  stop();
+  if (again) return;
+  audio();
+  const bufs = await Promise.all(take.files.map(load));
+  const key = `${cueId}/${k}`;
+  const gap = 0.13;
+  const start = ctx.currentTime + 0.03;
+  const sources = [];
+  for (let i = 0; i < times; i++) {
+    const n = rotation.get(key) || 0;
+    rotation.set(key, n + 1);
+    const src = ctx.createBufferSource();
+    src.buffer = bufs[n % bufs.length];
+    src.connect(ctx.destination);
+    src.start(start + i * gap);
+    sources.push(src);
+  }
+  const length = (times - 1) * gap + Math.max(...bufs.map(b => b.duration));
+  btn.setAttribute("aria-pressed", "true");
+  screen.classList.toggle("live", times === 1);
+  current = { sources, button: btn, screen, start, span: cue.span, length, raf: 0 };
+  if (times === 1) animate(current);
+  else setTimeout(() => { if (current && current.sources === sources) stop(); }, length * 1000 + 50);
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest(".play, .screen, .burst");
+  if (!el) return;
+  play(el.dataset.cue, Number(el.dataset.take), el.classList.contains("burst") ? 8 : 1);
+});
+</script>
