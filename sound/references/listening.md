@@ -33,6 +33,8 @@ Writes `<out-dir>/review.png`: for each file, its waveform (both channels) above
 | `tilt_db_oct` | Slope of the long-term spectrum from 100 Hz to 10 kHz. Steeper is darker. Useful for music against a reference, and for comparing passes. |
 | `side_db` | Side energy relative to mid. Very low is mono; near zero is very wide or out of phase. |
 
+`ear.md` (*Reading pleasantness from the evidence*) reads these as proxies for sharpness, harshness, roughness, life and width.
+
 ### `--curve`
 
 Prints the spectral centroid and the level relative to the loudest moment every 50 ms (about 60 points for long files). Use it whenever the brief claims motion — brightness rising into a pass and falling after, a bloom, stages — and check that the numbers draw that shape.

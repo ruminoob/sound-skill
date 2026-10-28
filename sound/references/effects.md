@@ -1,6 +1,6 @@
 # Effects
 
-How an effect goes from its brief to a finished file. Every function named here is in `scripts/dsp.py`. No values are given on purpose: frequencies, decays, levels and rooms come from the brief — the source, its material or voice, the listener's distance, the space — and from checking the result. Nothing here is a structure every sound must have; each section applies when the brief's source calls for it.
+How an effect goes from its brief to a finished file. Every function named here is in `scripts/dsp.py`. No values are given on purpose: frequencies, decays, levels and rooms come from the brief — the source, its material or voice, the listener's distance, the space — and from checking the result. Nothing here is a structure every sound must have; each section applies when the brief's source calls for it. What makes the result pleasant, cheap or tiring to hear is in `ear.md`.
 
 ## Stages and layers
 
@@ -57,7 +57,7 @@ Clicks, confirms, notifications and errors speak in the voice the product's worl
 - **Air, liquid, electricity, texture**: shaped noise through moving bands, drops and bubbles from fast pitch-falling sines, crackle from grains.
 - **Struck bodies** when the brief's world is made of them.
 
-A static waveform with one decay is the rejected shortcut in every family. For tonal cues the interval and its direction say something; decide what — the common reading (rising resolves, falling dismisses) is one vocabulary, not a rule. Length follows how often the cue is heard and how much it has to say.
+A static waveform with one decay is the rejected shortcut in every family. For tonal cues the interval and its direction say something; decide what — the common reading (rising resolves, falling dismisses) is one vocabulary, not a rule (`harmony.md`, *Short tonal cues*). Length follows how often the cue is heard and how much it has to say.
 
 ## Life
 
@@ -91,10 +91,12 @@ Then check against the first pass. A refinement can overshoot in any direction �
 
 ## Traps already paid for
 
-- **pedalboard's `Limiter` is a maximiser**: it adds make-up gain equal to minus its threshold and hard-clips samples at 0 dBFS, so inter-sample peaks still land above 0 dBTP. Treat its threshold as how hard you push into the ceiling, then lower the level until `true_peak_db` reads under −1 (`listen.py page` does this for auditions; shipped files need it too).
+- **pedalboard's `Limiter` is a maximiser**: it adds make-up gain equal to minus its threshold and hard-clips samples at 0 dBFS, so inter-sample peaks still land above 0 dBTP. Treat its threshold as how hard you push into the ceiling, then lower the level until `true_peak_db` reads under −1 (`listen.py page` does this for auditions; shipped files need it too). It also runs a fixed first stage that compresses 4:1 above −10 dBFS whatever the threshold, so it flattens a master's loudness and blunts its biggest hits well below the ceiling; when a piece's dynamics and its one hardest hit must survive the master, write a true-peak limiter of your own instead.
 - **Naive square and saw waves alias** into inharmonic whistles; FM sidebands above Nyquist fold back too. Use `saw` / `square` (PolyBLEP), render FM at twice the rate and downsample, and saturate through `drive` (oversampled).
 - **A moving average is not a filter**: it combs the spectrum with deep notches.
 - **Cutting a sound off clicks**, and so does butting two tones end to end; both show as vertical lines on the spectrogram.
 - **A contact pulse much longer than the period of the modes** leaves them barely excited and the sound dull; when a resonator sound measures darker than intended, shorten the contact before raising gains.
 - **A soft contact thumps at DC**: `resonate`'s resonators pass some of a long contact pulse's low-frequency energy, so every soft strike carries a low thump that is none of the object's modes. High-pass the excitation just below the lowest mode before it reaches the resonators.
 - **Per-sample Python loops are slow**: Karplus-Strong is one IIR (`lfilter`), each resonator is a biquad, and time-varying filters run block-wise with carried state (`sweep`).
+- **`pluck` is out of tune in the upper register**: its loop is a whole number of samples plus the averaging filter's half sample, so a string above a few hundred hertz can sit up to about twenty cents off, and no sheet or metric shows it. For tuned music, resample each rendered note by its error (`f * (L + 0.5) / SR`, with `L` the loop length `pluck` chose); the same read-position curve can carry a pitch bend.
+- **`filt` and `sweep` clamp at 10 Hz**: a biquad "lowpass" at a fraction of a hertz meant for slow drift is really a 10 Hz flutter. Draw slow wander as smoothed random keys over time instead.

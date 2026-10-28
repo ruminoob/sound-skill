@@ -42,7 +42,7 @@ When the project rebuilds or follows a reference site or product, carry over its
 
 ## 2. Build the first pass
 
-`references/effects.md` holds the techniques for effects, `references/music.md` for music. Every sound gets a design, not a fixed structure; the techniques follow the source in the brief:
+`references/ear.md` is the ground under all of it: what makes a sound pleasant, rich, cheap or tiring, and why. `references/effects.md` holds the techniques for effects, `references/music.md` for music, with `references/harmony.md` for the notes. Every sound gets a design, not a fixed structure; the techniques follow the source in the brief:
 
 - **The source's own technique.** A struck, plucked or rubbed object is excited, not summed: a contact pulse drives a bank of resonators (`contact` → `resonate`), so contact time sets hardness and brightness by itself. A synthetic voice is FM pairs with moving index envelopes, band-limited oscillators through filters, pitch and level that move. Air, liquid and texture are shaped noise and grains.
 - **Layers when the source has parts**, each with its own envelope and level. One designed voice can be the whole sound; what this skill rules out is a static waveform under one decay.
@@ -92,6 +92,8 @@ The kinds of sound this skill exists to replace:
 
 ## Files
 
+- `references/ear.md` — what the ear hears as pleasant, rich, cheap or tiring: spectrum and timbre, envelope, roughness, loudness, life, space, expectation, fatigue, and reading them from the evidence
+- `references/harmony.md` — intervals and the overtone series, tuning, pitch material, chords and voicing, voice leading, colour and modulation, other harmonic languages, melody against harmony, short tonal cues, pitch in code
 - `references/effects.md` — staging and layering, excitation and resonators, motion, impacts, UI sounds from synthetic and ringing voices, life, space, the finishing chain, the second pass, traps already paid for
 - `references/music.md` — the music brief (job, form and idiom), composition, arrangement, instruments by family, performance, space and balance, master, the second pass; genre conventions as tools of their idiom, never defaults
 - `references/listening.md` — what the review sheet and each metric show, defect signatures, brightness curves, loudness matching, the audition manifest and page

@@ -13,7 +13,7 @@ The idiom decides which tools below apply. A convention belongs to an idiom: use
 
 ## Composition
 
-- **Harmony** in the brief's language, with voicings spaced the way the chosen instruments would actually play them. Where voices move independently, each moves to the nearest note it can. Parallel motion is something an idiom chooses (power chords, chord stabs, planed harmony); when the idiom doesn't, chords that jump as one block sound generated.
+- **Harmony** in the brief's language, with voicings spaced the way the chosen instruments would actually play them. Where voices move independently, each moves to the nearest note it can. Parallel motion is something an idiom chooses (power chords, chord stabs, planed harmony); when the idiom doesn't, chords that jump as one block sound generated. The knowledge behind every harmonic language — intervals, tuning, chords, voice leading, colour, modulation — is in `harmony.md`, and what makes the result pleasant to hear in `ear.md`.
 - **Rhythm** that is performed, not printed: the feel the idiom asks for (tight, pushed, laid back, swung, rubato), accents that shape the bar, rests that let it breathe. One velocity on every beat is a metronome.
 - **Material** the piece is built from — a motif, a riff, a hook, a progression, a texture — and a plan for how it changes over the piece. Where the idiom lives on repetition (a groove, a loop, minimalism), the change lives in details around the material rather than in the material itself.
 - **Form and length** follow the brief: a film's length in whole bars where it is cut to a grid, a loop that returns cleanly to its start, a phrase that ends where the scene does, a song's sections in the order and proportions the song wants.
