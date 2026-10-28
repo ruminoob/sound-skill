@@ -1,6 +1,6 @@
 ---
 name: sound
-description: Make sound in code - sound effects, UI sounds, notification and confirm tones, impacts, whooshes, ambiences, jingles and music loops or beds - synthesized offline in Python from a physical event described in words, built in staged layers with their own envelopes, struck objects excited through resonators, given a space and finished on a bus, then given a second pass, checked as evidence (spectrogram sheets, loudness, edges, brightness curves) and auditioned by the user on a loudness-matched page. Use whenever a task makes or changes any sound - SFX for a film, site, app or game, UI clicks and chimes, a jingle, a music loop or bed in code (효과음, 사운드, 소리 만들어줘, UI 사운드, 알림음, 클릭음, 임팩트, 휙 소리, 트랜지션 사운드, 배경음, 음악 만들어줘, 루프, 징글, 사운드 디자인, 소리 다듬어줘). Not for editing or cutting a recording the user supplies, or for prompting an AI music service.
+description: Make sound in code - sound effects, UI sounds, notification and confirm tones, impacts, whooshes, ambiences, jingles, music loops and beds, standalone pieces and songs - synthesized offline in Python from a source described in words (a physical event or a synthetic voice), built with the techniques that source calls for, then given a second pass, checked as evidence (spectrogram sheets, loudness, edges, brightness curves) and auditioned by the user on a loudness-matched page. Use whenever a task makes or changes any sound - SFX for a film, site, app or game, UI clicks and chimes, a jingle, a music loop or bed, a song or piece in code (효과음, 사운드, 소리 만들어줘, UI 사운드, 알림음, 클릭음, 임팩트, 휙 소리, 트랜지션 사운드, 배경음, 음악 만들어줘, 노래 만들어줘, 곡 만들어줘, 루프, 징글, 사운드 디자인, 소리 다듬어줘). Not for editing or cutting a recording the user supplies, or for prompting an AI music service.
 compatibility: Python 3 with numpy, scipy, soundfile, matplotlib, pyloudnorm and pedalboard (scripts/requirements.txt); ffmpeg for mp3.
 ---
 
@@ -29,28 +29,27 @@ Keep the sound work in a `sound/` folder in the project (or beside the film or p
 
 One or two sentences per cue, written into `sound/CUES.md` before any code:
 
-- **The event**: what physically happens — the object, its material and size, what strikes, rubs, blows or moves it.
-- **Its stages**: real events happen in steps (contact then settling, approach then pass then departure, a strike then a bloom). Name them.
+- **The source**: what makes the sound — a physical event (the object, its material and size, what strikes, rubs, blows or moves it) or a synthetic voice the product's world speaks in, described by its character and how it moves.
+- **Its shape over time**: the stages a physical event goes through (contact then settling, approach then pass then departure, a strike then a bloom), how a synthetic voice moves, or that it holds still on purpose.
 - **The listener**: distance and the space around them.
 - **The meaning**: what the sound says in the product (done, arrived, landed, gone, wrong) and how often it will be heard.
 
-For music the brief is its job and its idiom instead (`references/music.md`, *The brief*).
+For music the brief is its job, its form and its idiom instead (`references/music.md`, *The brief*).
 
-Abstract sounds — a UI confirm, a digital transition — still get an event: a material and an action are the metaphor the layers are built from. The material comes from the product's own world (its design materials, the film's storyboard, what the product is made of), not a default set of sounds carried from project to project. The brief is what every layer answers to and what review checks against.
+Abstract sounds — a UI confirm, a digital transition — still get a described source the layers are built from, but it need not be a struck object: a synthetic voice is an equally valid source. The source comes from the product's own world (its design materials, the film's storyboard, what the product is made of), not a default set of sounds carried from project to project. Read the cue sheet as a set before building: when most cues have come out as knocks and taps on wood whatever the product is, the briefs have fallen back to a default. The brief is what every layer answers to and what review checks against.
 
-When the project rebuilds or follows a reference site or product, the user wants its sound language too, not a world invented beside it. Ask before downloading the reference's sound files, keep them for analysis only (never shipped, sampled or published), measure them — `listen.py check` with `--curve`, the strongest partials, envelope shape, width, and the music's tempo and density — and brief each cue from those traits, rebuilt in code.
+When the project rebuilds or follows a reference site or product, carry over its sound language too, rather than inventing a world beside it. Ask before downloading the reference's sound files, keep them for analysis only (never shipped, sampled or published), measure them — `listen.py check` with `--curve`, the strongest partials, envelope shape, width, and the music's tempo and density — and brief each cue from those traits, rebuilt in code.
 
 ## 2. Build the first pass
 
-`references/effects.md` holds the techniques for effects, `references/music.md` for music. The directions every sound follows:
+`references/effects.md` holds the techniques for effects, `references/music.md` for music. Every sound gets a design, not a fixed structure; the techniques follow the source in the brief:
 
-- **Stages become events in time**, each with its own excitation.
-- **Each stage splits into layers** — transient, body, weight, air or texture, tail — and every layer has its own envelope. Nothing shares one decay.
-- **Struck, plucked and rubbed objects are excited, not summed**: a contact pulse drives a bank of resonators (`contact` → `resonate`), so contact time sets hardness and brightness by itself.
-- **Moving things change level, brightness, pitch and position together, and asymmetrically**: arriving is not leaving in reverse.
-- **Nothing repeats identically**: sounds heard more than once get rotating variants and small random variation.
-- **Every sound sits in the space its brief names**; the low end stays dry and centred.
-- **Finish on a bus**: hygiene (high-pass, DC, starts and ends at silence), colour (oversampled saturation), dynamics (compression, parallel compression for weight, the limiter last).
+- **The source's own technique.** A struck, plucked or rubbed object is excited, not summed: a contact pulse drives a bank of resonators (`contact` → `resonate`), so contact time sets hardness and brightness by itself. A synthetic voice is FM pairs with moving index envelopes, band-limited oscillators through filters, pitch and level that move. Air, liquid and texture are shaped noise and grains.
+- **Layers when the source has parts**, each with its own envelope and level. One designed voice can be the whole sound; what this skill rules out is a static waveform under one decay.
+- **Stages as events in time** when the source has stages, and **motion from one model** when it moves: level, brightness, pitch and position derived together.
+- **Repetition decided by use**: cues that fire in quick succession get rotating variants or small variation; a signature sound meant to be recognised can stay identical.
+- **Space from the brief**, including none.
+- **Hygiene on every sound**: a high-pass below its lowest job, no DC, starts and ends at silence, true peak under −1 dBTP. Colour (oversampled saturation) and dynamics (compression, parallel compression, a limiter) only where the sound needs them.
 - **No digital shortcuts**: band-limited oscillators, oversampled FM and saturation, no hard cuts, no moving-average "filters".
 
 ## 3. Check it
@@ -63,7 +62,7 @@ Writes one review sheet (waveform and log spectrogram per take on a shared time 
 
 ## 4. Second pass
 
-Before anyone hears it, go through each cue again against `references/effects.md` *Second pass* (and `music.md` *Second pass* for music): the skipped stage, the summed sines that should be resonators, the symmetric motion, the low end without a job, the repeats, the transitions. Then check again and compare with the first pass: a refinement can overshoot (darker, duller, boomier). Keep the first pass's renders so the two can be compared, by numbers and, if the user wants, by ear.
+Before anyone hears it, go through each cue again against its brief with the questions in `references/effects.md` *Second pass* (and `music.md` *Second pass* for music): source, stages, hardness, brightness, length, low end, width, space, repeats, and whether the set has collapsed into one default voice. Then check again and compare with the first pass: a refinement can overshoot in any direction. Keep the first pass's renders so the two can be compared, by numbers and, if the user wants, by ear.
 
 ## 5. Audition
 
@@ -79,21 +78,22 @@ Write the user's verdict into `sound/CUES.md`. When the user rejects a quality o
 
 ## 6. Ship
 
-- **Files**: WAV for effects (48 kHz), mp3 or ogg for long beds on the web; mono for UI effects unless their width carries meaning.
-- **Levels** are relative to where the sound plays: UI sounds sit well under the content they answer; effects under music are set against the music's level, not in absolute terms, with a limiter on the sum.
-- **On the web**: decode each file once into an `AudioBuffer` (`fetch` + `decodeAudioData`), create or resume the `AudioContext` on the first user gesture, play with `AudioBufferSourceNode` (exact timing, overlaps allowed), rotate variants, give the visitor a mute control that is remembered, never autoplay sound. A sound goes on an action that deserves an answer, not on every hover.
+- **Files**: WAV for effects (48 kHz), mp3 or ogg for long beds on the web; mono or stereo as the brief's width asks.
+- **Levels** are relative to where the sound plays and what it sits beside; effects under music are set against the music's level, not in absolute terms, with a limiter on the sum.
+- **On the web**: decode each file once into an `AudioBuffer` (`fetch` + `decodeAudioData`), create or resume the `AudioContext` on the first user gesture, play with `AudioBufferSourceNode` (exact timing, overlaps allowed), rotate variants, give the visitor a mute control that is remembered, never autoplay sound. Which actions sound, and how often, is decided with the product; the more often a cue fires, the more its length and level have to allow for it.
 
 ## Ruled out
 
 The kinds of sound this skill exists to replace:
 
 - The one-pass shortcut: a lone sine or square beep with one exponential decay; a raw noise burst standing in for an impact or a whoosh; two tones butted end to end; sounds that stop by being cut off (a click) instead of decaying; the same file repeated identically.
+- Wooden knocks as the default answer: woodblock- or moktak-like taps (short, dry, inharmonic clicks) used for UI sounds and cues whatever the product's world is.
 - Music as a rigid grid of oscillator block chords and a square-wave melody on every beat, with no performance, no balance and an ending that just stops.
 
 ## Files
 
-- `references/effects.md` — staging and layering, excitation and resonators, motion, impacts, tonal UI sounds, life, space, the finishing chain, the second pass, traps already paid for
-- `references/music.md` — the music brief (job and idiom), composition, arrangement, instruments by family, performance, space and balance, master, the second pass; genre conventions as tools of their idiom, never defaults
+- `references/effects.md` — staging and layering, excitation and resonators, motion, impacts, UI sounds from synthetic and ringing voices, life, space, the finishing chain, the second pass, traps already paid for
+- `references/music.md` — the music brief (job, form and idiom), composition, arrangement, instruments by family, performance, space and balance, master, the second pass; genre conventions as tools of their idiom, never defaults
 - `references/listening.md` — what the review sheet and each metric show, defect signatures, brightness curves, loudness matching, the audition manifest and page
 - `scripts/dsp.py` — the toolkit: envelopes, band-limited oscillators, contact and resonators, Karplus-Strong, biquads and time-varying filters, oversampled saturation, generated rooms, reverb, chorus, ping-pong, tape wow, reverse swells, compression, limiting, sidechain, loudness levelling
 - `scripts/listen.py` — `check` (review sheet, metrics, curves) and `page` (loudness-matched audition page)

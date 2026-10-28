@@ -15,10 +15,11 @@ Writes `<out-dir>/review.png`: for each file, its waveform (both channels) above
 - **A vertical line across all frequencies at the end** — the sound was cut off: a click.
 - **A vertical line between two notes** — two tones butted end to end, or a discontinuity at a splice.
 - **Lines falling or mirroring at odd angles above a bright tone** — aliasing from a naive waveform or un-oversampled FM or saturation.
-- **Horizontal lines that never change** — a static oscillator; nothing in the sound is alive.
-- **Noise filling the frame evenly with no shape** — undesigned hiss. A designed noise layer has a band that moves with the event. The display range can hide a sweep, so confirm motion with `--curve`.
+- **Horizontal lines that never change** — a static oscillator; unless the brief asks for a steady tone, nothing in the sound is alive.
+- **Noise filling the frame evenly with no shape** — hiss nobody shaped. Unless the brief wants a steady texture, a noise layer has a band that moves with the event. The display range can hide a sweep, so confirm motion with `--curve`.
 - **A low band that outlasts the event** — a sub or rumble that drones instead of landing.
-- **Stages** should be visible as separate onsets; **higher modes** should fade before lower ones; **tails** should fade into the black, not stop.
+- **A few short, dry, inharmonic lines in the low kilohertz that die within tens of milliseconds** — a wood knock. Unless the brief is wood, the default has crept in.
+- Where the brief has **stages**, they show as separate onsets; in a resonating object, **higher modes** fade before lower ones; **tails** fade into the black instead of stopping.
 
 ### The metrics
 
@@ -28,7 +29,7 @@ Writes `<out-dir>/review.png`: for each file, its waveform (both channels) above
 | `true_peak_db` | Peak after 4× oversampling. Anything above −1 dBTP will clip after encoding. |
 | `crest_db` | Peak to RMS. A very high crest on a short sound means one spike carries it; a very low one means it is squashed. |
 | `first_sample_db`, `last_2ms_db` | The edges, relative to the peak. A start near the peak level clicks on; an end above about −40 dB clicks off. |
-| `centroid_hz` | Brightness. Compare passes: a refinement that drops it far has probably gone dull. |
+| `centroid_hz` | Brightness. Compare with the brief and with the previous pass; a large move either way deserves a look. |
 | `tilt_db_oct` | Slope of the long-term spectrum from 100 Hz to 10 kHz. Steeper is darker. Useful for music against a reference, and for comparing passes. |
 | `side_db` | Side energy relative to mid. Very low is mono; near zero is very wide or out of phase. |
 
